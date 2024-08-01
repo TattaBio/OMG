@@ -193,9 +193,9 @@ class OMGDataset(datasets.GeneratorBasedBuilder):
             # Original element ids. List of cds/igs keys in the correct genomic order.
             orig_ids = [line.strip().split("\t")[-1] for line in lines]
             num_elems = len(orig_ids)
-            # Need at least _min_elems elements to be considered, -1 because of the separator token that is not part of the data.
-            if num_elems < self._min_elems - 1:
-                logging.info(f"{sample_dir} only has {num_elems} elements, skipping")
+            if num_elems < self.omg_config.min_elems:
+                logging.info(
+                    f"{sample_dir} only has {num_elems} elements, skipping")
                 continue
 
             # Filter elements from blacklist
@@ -225,7 +225,8 @@ class OMGDataset(datasets.GeneratorBasedBuilder):
                 elem_len = int(end) - int(start)
                 # Get the sequence of the current element, or None.
                 elem_seq = (
-                    cds_dict.get(elem, None) if is_cds else igs_dict.get(elem, None)
+                    cds_dict.get(elem, None) if is_cds else igs_dict.get(
+                        elem, None)
                 )
                 valid_elem = (
                     # Element Was found.
