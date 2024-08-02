@@ -21,7 +21,7 @@
     <a href="https://huggingface.co/spaces/dgeb"><img style="float: middle;" width="120" height="120" src="./docs/images/tatta_logo.png" /></a>
 </h3>
 
-The OMG is a 3.2T base pair metagenomic pretraining dataset, combining EMBL's MGnify and JGI's IMG databases. The combined data is pre-processed into a mixed-modality dataset, with translated amino acids for protein coding sequences, and nucleic acids for intergenic sequences.
+The OMG is a 3.1T base pair metagenomic pretraining dataset, combining EMBL's MGnify and JGI's IMG databases. The combined data is pre-processed into a mixed-modality dataset, with translated amino acids for protein coding sequences, and nucleic acids for intergenic sequences.
 
 We make three datasets available on the HuggingFace Hub:
 
@@ -50,6 +50,13 @@ import datasets
 
 ds = datasets.load_dataset('tattabio/OMG', streaming=True)['train']
 print(next(iter(ds)))
+```
+
+An example of tokenizing the dataset is provided in `scripts/tokenize_OMG.py`.
+```bash
+cd scripts
+python tokenize_OMG.py --dataset_name=tattabio/OMG
+
 ```
 
 ## Format

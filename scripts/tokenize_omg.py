@@ -1,6 +1,4 @@
 """Example script for tokenizing the OMG dataset."""
-
-
 import argparse
 import datasets
 import numpy as np
@@ -83,7 +81,7 @@ def parse_args():
     parser.add_argument(
         "--tokenizer_name",
         type=str,
-        default='tattabio/gLM2',
+        default='tattabio/gLM',
         help="The name of the tokenizer to use.",
     )
     parser.add_argument(
@@ -110,7 +108,7 @@ def parse_args():
 def main():
     args = parse_args()
 
-    ds = datasets.load_dataset('tattabio/OMG')
+    ds = datasets.load_dataset(args.dataset_name)
     tokenizer = AutoTokenizer.from_pretrained(args.tokenizer_name)
 
     tokenize_function_kwargs = {
@@ -119,18 +117,23 @@ def main():
     }
 
     # Tokenize the dataset.
-    # Use batched=True with batch_size=1 to allow for multiple examples to be return per scaffold.
+    # NOTE: Currently, each scaffold is tokenized separately.
+    # Padding can be reduced by packing scaffolds with a <sep> token.
     tokenized_ds = ds.map(
         tokenize_function,
         batched=True,
         batch_size=1,
         num_proc=args.num_proc,
         fn_kwargs=tokenize_function_kwargs,
-        remove_columns=ds.column_names,
+        remove_columns=ds['train'].column_names,
     )
 
     tokenized_ds = tokenized_ds.with_format(
-        type="torch", columns=ds.column_names)
+        type="torch", columns=tokenized_ds['train'].column_names)
 
     tokenized_ds.save_to_disk(args.save_dir, num_proc=args.num_proc)
     print(f"Saved to: {args.save_dir}")
+
+
+if __name__ == "__main__":
+    main()
