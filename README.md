@@ -6,7 +6,7 @@
         <img alt="bioRxiv URL" src="https://img.shields.io/badge/bioRxiv-XXX.svg">
     </a>
     <a href="https://huggingface.co/datasets/tattabio/OMG">
-        <img alt="Huggingface URL" src="https://huggingface.co/datasets/huggingface/badges/resolve/main/dataset-on-hf-md.svg" style="vertical-align:-3px;">
+        <img alt="Huggingface URL" src="https://huggingface.co/datasets/huggingface/badges/resolve/main/dataset-on-hf-md.svg" style="vertical-align:-5px;">
     </a>
 </p>
 
