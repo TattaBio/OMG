@@ -1,4 +1,5 @@
 """Example script for tokenizing the OMG dataset."""
+
 import argparse
 import datasets
 import numpy as np
@@ -12,27 +13,30 @@ def tokenize_function(examples, tokenizer, max_seq_length: int):
     example = {k: v[0] for k, v in examples.items()}
 
     # Get CDS features.
-    cds_seqs = example['CDS_seqs']
-    cds_positions = example['CDS_position_ids']
-    cds_orientations = example['CDS_orientations']
+    cds_seqs = example["CDS_seqs"]
+    cds_positions = example["CDS_position_ids"]
+    cds_orientations = example["CDS_orientations"]
 
     # Get IGS features.
-    igs_seqs = example['IGS_seqs']
-    igs_positions = example['IGS_position_ids']
+    igs_seqs = example["IGS_seqs"]
+    igs_positions = example["IGS_position_ids"]
 
     # NOTE: This assumes the tokenizer handles all nucleotide sequences as lower-case.
     # This is to avoid collisions with amino-acids A, T, C, G (for example Glycine).
     igs_seqs = [seq.lower() for seq in igs_seqs]
 
     # Add orientation tokens.
-    orientation_map = {True: '<+>', False: '<->'}
-    cds_seqs = [f"{orientation_map[orient]}{seq}" for orient, seq in zip(
-        cds_orientations, cds_seqs)]
+    orientation_map = {True: "<+>", False: "<->"}
+    cds_seqs = [
+        f"{orientation_map[orient]}{seq}"
+        for orient, seq in zip(cds_orientations, cds_seqs)
+    ]
 
     # Tokenize the CDS and IGS sequences.
     tokenized_cds = tokenizer(cds_seqs)
-    tokenized_igs = tokenizer(igs_seqs) if igs_seqs else {
-        k: [] for k in tokenized_cds.keys()}
+    tokenized_igs = (
+        tokenizer(igs_seqs) if igs_seqs else {k: [] for k in tokenized_cds.keys()}
+    )
 
     def _interleave(cds_elems, igs_elems):
         """Interleave the cds and igs elements based on the position ids."""
@@ -44,10 +48,10 @@ def tokenize_function(examples, tokenizer, max_seq_length: int):
             elems[i] = elem
         return elems
 
-    input_ids = _interleave(
-        tokenized_cds['input_ids'], tokenized_igs['input_ids'])
+    input_ids = _interleave(tokenized_cds["input_ids"], tokenized_igs["input_ids"])
     attention_mask = _interleave(
-        tokenized_cds['attention_mask'], tokenized_igs['attention_mask'])
+        tokenized_cds["attention_mask"], tokenized_igs["attention_mask"]
+    )
 
     # Flatten the sequence elements
     input_ids = np.array(list(chain(*input_ids)), dtype=np.int16)
@@ -55,8 +59,9 @@ def tokenize_function(examples, tokenizer, max_seq_length: int):
 
     # Pad to multiple of max_seq_length
     pad_length = max_seq_length - len(input_ids) % max_seq_length
-    input_ids = np.pad(input_ids, (0, pad_length),
-                       constant_values=tokenizer.pad_token_id)
+    input_ids = np.pad(
+        input_ids, (0, pad_length), constant_values=tokenizer.pad_token_id
+    )
     attention_mask = np.pad(attention_mask, (0, pad_length), constant_values=0)
 
     # Reshape to (num_examples, max_seq_length)
@@ -64,8 +69,8 @@ def tokenize_function(examples, tokenizer, max_seq_length: int):
     attention_mask = attention_mask.reshape(-1, max_seq_length)
 
     tokenized_data = {
-        'input_ids': input_ids,
-        'attention_mask': attention_mask,
+        "input_ids": input_ids,
+        "attention_mask": attention_mask,
     }
     return tokenized_data
 
@@ -75,13 +80,13 @@ def parse_args():
     parser.add_argument(
         "--dataset_name",
         type=str,
-        default='tattabio/OMG',
+        default="tattabio/OMG",
         help="The name of the dataset to tokenize",
     )
     parser.add_argument(
         "--tokenizer_name",
         type=str,
-        default='tattabio/gLM',
+        default="tattabio/gLM",
         help="The name of the tokenizer to use.",
     )
     parser.add_argument(
@@ -125,11 +130,12 @@ def main():
         batch_size=1,
         num_proc=args.num_proc,
         fn_kwargs=tokenize_function_kwargs,
-        remove_columns=ds['train'].column_names,
+        remove_columns=ds["train"].column_names,
     )
 
     tokenized_ds = tokenized_ds.with_format(
-        type="torch", columns=tokenized_ds['train'].column_names)
+        type="torch", columns=tokenized_ds["train"].column_names
+    )
 
     tokenized_ds.save_to_disk(args.save_dir, num_proc=args.num_proc)
     print(f"Saved to: {args.save_dir}")
