@@ -13,6 +13,7 @@
 <h4 align="center">
     <p>
         <a href="#usage">Usage</a> |
+        <a href="#format">Format</a> |
         <a href="#citing">Citing</a>
     <p>
 </h4>
@@ -21,7 +22,7 @@
     <a href="https://huggingface.co/spaces/dgeb"><img style="float: middle;" width="120" height="120" src="./docs/images/tatta_logo.png" /></a>
 </h3>
 
-The OMG is a 3.1T base pair metagenomic pretraining dataset, combining EMBL's MGnify and JGI's IMG databases. The combined data is pre-processed into a mixed-modality dataset, with translated amino acids for protein coding sequences, and nucleic acids for intergenic sequences.
+The OMG is a 3.1T base pair metagenomic pretraining dataset, combining EMBL's [MGnify](https://www.ebi.ac.uk/metagenomics) and JGI's [IMG](https://img.jgi.doe.gov) databases. The combined data is pre-processed into a mixed-modality dataset, with translated amino acids for protein coding sequences, and nucleic acids for intergenic sequences.
 
 We make three datasets available on the HuggingFace Hub:
 
@@ -80,6 +81,6 @@ Each row of the dataset represents a genomic scaffold, as an ordered list of ami
 ## Citing
 
 OMG was introduced in "[The OMG dataset: An Open MetaGenomic corpus for mixed-modality genomic language modeling
-]()", feel free to cite:
+]()". Feel free to cite:
 
 TODO: add bibtex citation
